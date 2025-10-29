@@ -1,0 +1,52 @@
+/* styles.css - dark themed */
+:root {
+  --bg: #0f1724;
+  --card: #0b1220;
+  --muted: #98a0b3;
+  --accent: #6ee7b7;
+  --text: #e6eef8;
+  --glass: rgba(255,255,255,0.03);
+}
+
+* { box-sizing: border-box; font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; }
+body {
+  margin: 0; background: linear-gradient(180deg,#071021 0%, #0c1724 100%); color: var(--text);
+  min-height: 100vh;
+}
+
+.nav {
+  display:flex; justify-content:space-between; align-items:center; padding:12px 20px;
+  background: rgba(255,255,255,0.02); border-bottom: 1px solid rgba(255,255,255,0.03);
+}
+.brand { font-weight:700; font-size:1.1rem; color: var(--accent); }
+.nav-links button {
+  background: transparent; color: var(--muted); border: none; margin-left:8px; cursor:pointer; padding:8px;
+}
+.nav-links button:hover { color: var(--text); }
+
+.container { padding: 24px; max-width: 1000px; margin: 0 auto; }
+.section { margin-top: 18px; }
+.hidden { display: none; }
+
+.card {
+  background: var(--card); padding: 16px; border-radius: 12px; box-shadow: 0 6px 18px rgba(2,6,23,0.6);
+  margin-top: 12px;
+}
+.card.small { max-width: 600px; }
+h1,h2 { margin: 0 0 8px 0; color: var(--text); }
+p { color: var(--muted); line-height:1.5; }
+
+input[type="text"], input[type="date"], input {
+  width: 100%; padding:10px 12px; margin:8px 0 12px 0; border-radius:8px; border: 1px solid rgba(255,255,255,0.04);
+  background: var(--glass); color: var(--text);
+}
+button {
+  background: linear-gradient(90deg, rgba(110,231,183,0.18), rgba(110,231,183,0.08));
+  border: 1px solid rgba(110,231,183,0.12); color: var(--text); padding: 8px 12px; border-radius:10px; cursor:pointer;
+}
+button:hover { transform: translateY(-1px); }
+
+.result { background: rgba(0,0,0,0.25); padding: 12px; border-radius: 8px; margin-top: 8px; color: var(--muted); white-space: pre-wrap; max-height: 260px; overflow:auto; }
+
+.chatlog { background: rgba(255,255,255,0.02); padding: 12px; min-height: 120px; max-height: 240px; overflow:auto; border-radius:8px; color: var(--muted); }
+footer.footer { text-align:center; color:var(--muted); padding:12px; margin-top: 14px; }

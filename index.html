@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Blockchain Certificate Verifier</title>
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="./chain.json">
+  <link rel="stylesheet" href="./server.js">
+  <link rel="stylesheet" href="./package.json">
+</head>
+<body>
+  <nav class="nav">
+    <div class="brand">CertChain</div>
+    <div class="nav-links">
+      <button onclick="showSection('home')">Home</button>
+      <button onclick="showSection('verify')">Verify</button>
+      <button onclick="showSection('admin')">Admin</button>
+      <button onclick="showSection('chat')">Chatbot</button>
+    </div>
+  </nav>
+
+  <main class="container">
+    <section id="home" class="section">
+      <h1>Blockchain Certificate Verifier</h1>
+      <p>Store certificates on a dummy JSON blockchain and verify authenticity. Built with Node.js, simple blockchain simulation, and an AI chatbot.</p>
+      <div class="card">
+        <h3>Demo Actions</h3>
+        <ol>
+          <li>Go to <b>Admin</b> and add a certificate.</li>
+          <li>Then go to <b>Verify</b> and check with certificate ID.</li>
+          <li>Use <b>Chatbot</b> to ask about verification.</li>
+        </ol>
+      </div>
+    </section>
+
+    <section id="verify" class="section hidden">
+      <h2>Verify Certificate</h2>
+      <div class="card">
+        <label>Certificate ID</label>
+        <input id="verifyInput" placeholder="e.g., CERT-123" />
+        <button onclick="verifyCert()">Verify</button>
+        <pre id="verifyResult" class="result"></pre>
+      </div>
+      <div class="card small">
+        <button onclick="loadChain()">View Full Chain</button>
+        <pre id="chainView" class="result"></pre>
+      </div>
+    </section>
+
+    <section id="admin" class="section hidden">
+      <h2>Admin - Add Certificate</h2>
+      <div class="card">
+        <label>Certificate ID</label>
+        <input id="certId" placeholder="CERT-123" />
+        <label>Student Name</label>
+        <input id="studentName" placeholder="Md. Al Rakib" />
+        <label>Issuer</label>
+        <input id="issuer" placeholder="Holy Land School & College" />
+        <label>Issue Date</label>
+        <input id="issueDate" type="date" />
+        <button onclick="addCertificate()">Add Certificate</button>
+        <pre id="addResult" class="result"></pre>
+      </div>
+    </section>
+
+    <section id="chat" class="section hidden">
+      <h2>AI Chatbot</h2>
+      <div class="card">
+        <div id="chatLog" class="chatlog"></div>
+        <input id="chatInput" placeholder="Say 'verify CERT-123' or 'how to verify'..." onkeydown="if(event.key==='Enter') sendChat()" />
+        <button onclick="sendChat()">Send</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <small>Made with ♥ — Demo blockchain + AI chatbot</small>
+  </footer>
+
+<script>
+const baseUrl = '';
+
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
+  document.getElementById(id).classList.remove('hidden');
+}
+showSection('home');
+
+async function addCertificate() {
+  const certId = document.getElementById('certId').value.trim();
+  const studentName = document.getElementById('studentName').value.trim();
+  const issuer = document.getElementById('issuer').value.trim();
+  const issueDate = document.getElementById('issueDate').value;
+  const resultBox = document.getElementById('addResult');
+
+  if (!certId || !studentName || !issuer || !issueDate) {
+    resultBox.textContent = 'All fields are required.';
+    return;
+  }
+
+  try {
+    const res = await fetch(baseUrl + '/addCertificate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ certId, studentName, issuer, issueDate })
+    });
+    const data = await res.json();
+    resultBox.textContent = JSON.stringify(data, null, 2);
+  } catch (err) {
+    resultBox.textContent = 'Error: ' + err.message;
+  }
+}
+
+async function verifyCert() {
+  const id = document.getElementById('verifyInput').value.trim();
+  const out = document.getElementById('verifyResult');
+  if (!id) { out.textContent = 'Enter certificate ID'; return; }
+  try {
+    const res = await fetch(baseUrl + '/verify/' + encodeURIComponent(id));
+    const data = await res.json();
+    out.textContent = JSON.stringify(data, null, 2);
+  } catch (err) {
+    out.textContent = 'Error: ' + err.message;
+  }
+}
+
+async function loadChain() {
+  const out = document.getElementById('chainView');
+  try {
+    const res = await fetch(baseUrl + '/chain');
+    const data = await res.json();
+    out.textContent = JSON.stringify(data, null, 2);
+  } catch (err) {
+    out.textContent = 'Error: ' + err.message;
+  }
+}
+
+async function sendChat() {
+  const input = document.getElementById('chatInput');
+  const msg = input.value.trim();
+  if (!msg) return;
+  appendChat('You: ' + msg);
+  input.value = '';
+  try {
+    const res = await fetch(baseUrl + '/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: msg })
+    });
+    const data = await res.json();
+    appendChat('Bot: ' + (data.reply || JSON.stringify(data)));
+  } catch (err) {
+    appendChat('Bot: Error: ' + err.message);
+  }
+}
+
+function appendChat(text) {
+  const node = document.createElement('div');
+  node.textContent = text;
+  document.getElementById('chatLog').appendChild(node);
+  document.getElementById('chatLog').scrollTop = 9999;
+}
+</script>
+</body>
+</html>
