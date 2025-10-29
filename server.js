@@ -49,6 +49,7 @@ function ensureChain() {
       issuer: 'GENESIS',
       issueDate: timestamp
     };
+    
     const certificateHash = makeCertificateHash(genesisCert);
     const genesis = {
       index: 0,
@@ -61,6 +62,7 @@ function ensureChain() {
       previousHash: '0',
       hash: calculateHash(0, timestamp, certificateHash, '0')
     };
+    
     chain = [genesis];
     writeChain(chain);
     return chain;
