@@ -1,4 +1,5 @@
 /* styles.css - dark themed */
+
 :root {
   --bg: #0f1724;
   --card: #0b1220;
@@ -50,3 +51,4 @@ button:hover { transform: translateY(-1px); }
 
 .chatlog { background: rgba(255,255,255,0.02); padding: 12px; min-height: 120px; max-height: 240px; overflow:auto; border-radius:8px; color: var(--muted); }
 footer.footer { text-align:center; color:var(--muted); padding:12px; margin-top: 14px; }
+
